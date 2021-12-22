@@ -2,7 +2,7 @@
   <div class="hello">
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
       <div class="container">
-        <a class="navbar-brand" href="#page-top"><img :src="img" alt="..." /></a>
+        <a class="navbar-brand" href="#page-top"><img v-bind:src="img" alt="..." /></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           Menu
           <i class="fas fa-bars ms-1"></i>
@@ -385,9 +385,32 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+import { getFirestore } from "firebase/firestore"
+
+const db = getFirestore();
+import { doc, getDoc } from "firebase/firestore";
+
+(async () => {
+  const docRef = doc(db, "test",'1');
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data());
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
+  }
+
+
+})();
+
+
+
+/*firebase auth*/
+/*
+
 import { getAuth,signInWithEmailAndPassword   } from "firebase/auth";
 const auth = getAuth();
-/*createUserWithEmailAndPassword(auth, 'alfra1@gmail.com', '123456')
+ createUserWithEmailAndPassword(auth, 'alfra1@gmail.com', '123456')
     .then((userCredential) => {
       const user = userCredential.user;
     console.log(user);
@@ -395,8 +418,7 @@ const auth = getAuth();
     .catch((error) => {
       console.log(error.code);
       console.log(error.message);
-    });*/
-
+    });
 signInWithEmailAndPassword(auth, 'alfra@gmail.com', '123456')
     .then((userCredential) => {
       // Signed in
@@ -407,6 +429,7 @@ signInWithEmailAndPassword(auth, 'alfra@gmail.com', '123456')
       console.log(error.code);
       console.log(error.message);
     });
+*/
 
 
 console.log(app)
@@ -417,7 +440,7 @@ export default {
   },
   data: function () {
     return {
-      img: 'assets/assets/img/navbar-logo.svg'
+      img: require('@/assets/assets/img/navbar-logo.svg')
     }
   }
 }
