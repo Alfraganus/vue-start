@@ -1,5 +1,7 @@
 <template>
   <div class="hello">
+    <Navigation />
+
     <header class="masthead">
       <div class="container">
         <div class="masthead-subheading">Welcome To Our Studio!</div>
@@ -371,6 +373,7 @@ import { getFirestore } from "firebase/firestore"
 
 const db = getFirestore();
 import { doc, getDoc } from "firebase/firestore";
+import Navigation from "./Navigation";
 
 (async () => {
   const docRef = doc(db, "test",'1');
@@ -420,6 +423,7 @@ export default {
   props: {
     msg: String
   },
+  components: {Navigation},
   data: function () {
     return {
       img: require('@/assets/assets/img/navbar-logo.svg')
