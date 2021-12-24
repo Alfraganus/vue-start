@@ -2,16 +2,18 @@
 <template>
   <div>
     <div class="login-form">
+      <div id="notifikation"></div>
+        <Toast v-if="showToToast"></Toast>
         <form action="#">
         <h2 class="text-center">Log in</h2>
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="Username" required="required">
+          <input type="text" class="form-control" v-model="form.email" placeholder="Username" required="required">
         </div>
         <div class="form-group">
-          <input type="password" class="form-control" placeholder="Password" required="required">
+          <input type="password" class="form-control" v-model="form.password"  placeholder="Password" required="required">
         </div>
         <div class="form-group">
-          <button type="submit" class="btn btn-primary btn-block">Log in</button>
+          <button type="button" v-on:click="SignIn()" class="btn btn-primary btn-block">Log in</button>
         </div>
         <div class="clearfix">
           <label class="float-left form-check-label"><input type="checkbox"> Remember me</label>
@@ -21,19 +23,39 @@
       <p class="text-center"><a href="#">Create an Account</a></p>
       <router-view></router-view>
     </div>
-
   </div>
 
 </template>
 
 <script>
 
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {initializeApp} from "firebase/app";
+import VueNotifikation from 'vue-notifikation';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyClUtvprjgHl1xg5cx0JpN0dCRMtJKsxFY",
+  authDomain: "myapplication-cc132.firebaseapp.com",
+  databaseURL: "https://myapplication-cc132.firebaseio.com",
+  projectId: "myapplication-cc132",
+  storageBucket: "myapplication-cc132.appspot.com",
+  messagingSenderId: "491160586187",
+  appId: "1:491160586187:web:19e967b7efca023722d84e"
+};
+initializeApp(firebaseConfig);
+
+import { Toast } from 'vuex-toast'
+import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
+import Vue from "vue";
+Vue.use(VueNotifikation);
 const auth = getAuth();
 export default {
   name: 'Login',
+  components : {
+    Toast
+  },
   data() {
     return {
+      showToToast : false,
       form: {
         email :'',
         password :'',
@@ -42,22 +64,47 @@ export default {
     }
   },
   methods: {
-    checkAuth() {
+    CreateUser() {
       createUserWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
             // Signed in
             const user = userCredential.user;
-            this.$router.replace({ name: "/" });
+            this.$router.push("/login");
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+
+            console.log(errorCode)
+            console.log(errorMessage)
+          });
+    },
+    SignIn()
+    {
+      console.log(this.form.email)
+      signInWithEmailAndPassword(auth, this.form.email, this.form.password)
+          .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+            this.$router.push("/");
+            console.log(user)
           })
           .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log(errorCode)
             console.log(errorMessage)
-          });
-    }
-  },
 
+          });
+    },
+  },
+  mounted() {
+    this.$notifikation.info({
+      message: `You've just von 1 000 000$!!!`,
+      height:50,
+      width:100,
+    });
+  }
 }
 </script>
 

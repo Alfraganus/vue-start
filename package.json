@@ -11,8 +11,10 @@
     "core-js": "^3.20.1",
     "firebase": "^9.6.1",
     "vue": "^2.6.11",
+    "vue-notifikation": "^1.1.0",
     "vue-router": "^3.5.3",
-    "vuex": "^3.6.2"
+    "vuex": "^3.6.2",
+    "vuex-toast": "^0.1.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
