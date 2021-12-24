@@ -2,7 +2,7 @@
 <template>
   <div>
     <div class="login-form">
-      <form action="/examples/actions/confirmation.php" method="post">
+        <form action="#">
         <h2 class="text-center">Log in</h2>
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Username" required="required">
@@ -28,15 +28,36 @@
 
 <script>
 
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+const auth = getAuth();
 export default {
   name: 'Login',
-  methods: {
-    checkAuth() {
+  data() {
+    return {
+      form: {
+        email :'',
+        password :'',
+      },
+      error : null
     }
   },
-  mounted() {
-    this.checkAuth()
-  }
+  methods: {
+    checkAuth() {
+      createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+            this.$router.replace({ name: "/" });
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode)
+            console.log(errorMessage)
+          });
+    }
+  },
+
 }
 </script>
 

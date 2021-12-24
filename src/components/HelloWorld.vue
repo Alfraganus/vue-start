@@ -358,17 +358,7 @@
 import { initializeApp } from "firebase/app";
 
 
-const firebaseConfig = {
-  apiKey: "AIzaSyClUtvprjgHl1xg5cx0JpN0dCRMtJKsxFY",
-  authDomain: "myapplication-cc132.firebaseapp.com",
-  databaseURL: "https://myapplication-cc132.firebaseio.com",
-  projectId: "myapplication-cc132",
-  storageBucket: "myapplication-cc132.appspot.com",
-  messagingSenderId: "491160586187",
-  appId: "1:491160586187:web:19e967b7efca023722d84e"
-};
 
-const app = initializeApp(firebaseConfig);
 import { getFirestore } from "firebase/firestore"
 
 const db = getFirestore();
