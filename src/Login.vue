@@ -2,8 +2,6 @@
 <template>
   <div>
     <div class="login-form">
-      <div id="notifikation"></div>
-        <Toast v-if="showToToast"></Toast>
         <form action="#">
         <h2 class="text-center">Log in</h2>
         <div class="form-group">
@@ -21,6 +19,9 @@
         </div>
       </form>
       <p class="text-center"><a href="#">Create an Account</a></p>
+      <button v-on:click="googleSignIn()">Google Signin</button>
+
+
       <router-view></router-view>
     </div>
   </div>
@@ -28,10 +29,18 @@
 </template>
 
 <script>
-
 import {initializeApp} from "firebase/app";
-import VueNotifikation from 'vue-notifikation';
-
+import notification from 'vue-notification-ui'
+import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider } from "firebase/auth";
+import Vue from "vue";
+Vue.use(notification, {
+  position: 'notification-top-right', // top, bottom, left, right
+  duration: 5000, // default
+  left: 20, // default
+  bottom: 20, // default
+  top: 20, // default
+  right: 40 // default
+})
 const firebaseConfig = {
   apiKey: "AIzaSyClUtvprjgHl1xg5cx0JpN0dCRMtJKsxFY",
   authDomain: "myapplication-cc132.firebaseapp.com",
@@ -42,20 +51,18 @@ const firebaseConfig = {
   appId: "1:491160586187:web:19e967b7efca023722d84e"
 };
 initializeApp(firebaseConfig);
+const provider = new GoogleAuthProvider();
+provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
 
-import { Toast } from 'vuex-toast'
-import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
-import Vue from "vue";
-Vue.use(VueNotifikation);
+
+
 const auth = getAuth();
 export default {
   name: 'Login',
   components : {
-    Toast
   },
   data() {
     return {
-      showToToast : false,
       form: {
         email :'',
         password :'',
@@ -64,6 +71,28 @@ export default {
     }
   },
   methods: {
+    googleSignIn()
+    {
+      signInWithPopup(auth, provider)
+          .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            // The signed-in user info.
+            const user = result.user;
+            console.log(user)
+            // ...
+          }).catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+      });
+    },
     CreateUser() {
       createUserWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
@@ -90,6 +119,11 @@ export default {
             console.log(user)
           })
           .catch((error) => {
+            this.$notification(
+                'Error occured!',
+                error.message,
+                'danger',
+            )
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log(errorCode)
@@ -99,11 +133,7 @@ export default {
     },
   },
   mounted() {
-    this.$notifikation.info({
-      message: `You've just von 1 000 000$!!!`,
-      height:50,
-      width:100,
-    });
+
   }
 }
 </script>
